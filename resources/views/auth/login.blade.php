@@ -64,6 +64,7 @@
                                 @endif
                             </div>
                         </div>
+                        <a href="{{route('gitauth')}}" class="btn btn-secondary">GitHub Auth</a>
                     </form>
                 </div>
             </div>
