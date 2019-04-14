@@ -67,13 +67,11 @@ class DashboardController extends Controller
 
     public function showRepo(Request $request)
     {
-//        dd($request->route()->parameters());
         $owner = $request->route()->parameters()['owner'];
         $name = $request->route()->parameters()['name'];
         $endpoint = "http://api.github.com/repos/" . $owner . "/" . $name;
-//        return response()->json($endpoint);
 
-        return view('dashboard.reposinfo',compact('endpoint'));
+        return view('dashboard.reposinfo');
 
 
 
