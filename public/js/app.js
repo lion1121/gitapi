@@ -1810,6 +1810,36 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1817,7 +1847,9 @@ Vue.component('v-select', vue_select__WEBPACK_IMPORTED_MODULE_3___default.a);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      list: []
+      list: [],
+      q: '',
+      foundRepos: []
     };
   },
   components: {
@@ -1847,7 +1879,7 @@ Vue.component('v-select', vue_select__WEBPACK_IMPORTED_MODULE_3___default.a);
             case 2:
               repos = _context.sent;
               _context.next = 5;
-              return axios__WEBPACK_IMPORTED_MODULE_2___default.a.get('https://api.github.com/users/lion1121/starred').then(function (res) {
+              return axios__WEBPACK_IMPORTED_MODULE_2___default.a.get('/ajax/getUserRepos').then(function (res) {
                 return res.data;
               });
 
@@ -1856,10 +1888,10 @@ Vue.component('v-select', vue_select__WEBPACK_IMPORTED_MODULE_3___default.a);
               //If repos has been stared add property stared = true, else = false
               repos.map(function (item) {
                 for (var i = 0; i < usersStaredRepos.length; i++) {
-                  if (item.full_name === usersStaredRepos[i].full_name) {
-                    item.stared = true;
-                  } else {
-                    item.stared = false;
+                  if (item.full_name === usersStaredRepos[i].full_name && item.hasOwnProperty('is_liked')) {
+                    item.is_liked = usersStaredRepos[i].is_liked;
+                  } else if (!item.hasOwnProperty('is_liked')) {
+                    item.is_liked = 0;
                   }
                 }
               });
@@ -1879,32 +1911,62 @@ Vue.component('v-select', vue_select__WEBPACK_IMPORTED_MODULE_3___default.a);
 
     return created;
   }(),
-  actions: {}
-});
+  methods: {
+    likeRepos: function () {
+      var _likeRepos = _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(repo) {
+        var _this = this;
 
-/***/ }),
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/ajax/likeRepo', {
+                  repoName: repo.full_name
+                }).then(function (res) {
+                  _this.list.map(function (item) {
+                    if (item.full_name === res.data) {
+                      item.is_liked = 1;
+                    }
+                  });
+                });
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/dashboard/reposlist-search.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/dashboard/reposlist-search.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+              case 2:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      a: 1
-    };
+      function likeRepos(_x) {
+        return _likeRepos.apply(this, arguments);
+      }
+
+      return likeRepos;
+    }(),
+    diselikeRepos: function diselikeRepos(repo) {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/ajax/diselikeRepo', {
+        repoName: repo.full_name
+      }).then(function (res) {
+        _this2.list.map(function (item) {
+          if (item.full_name === res.data) {
+            item.is_liked = 0;
+          }
+        });
+      });
+    },
+    searchRepos: function searchRepos(q) {
+      var _this3 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.get("https://api.github.com/search/repositories?q=".concat(q)).then(function (res) {
+        _this3.foundRepos = _.chunk(res.data.items, 50)[0];
+      });
+    }
   }
 });
 
@@ -20919,109 +20981,185 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "wrapper" }, [
-    _c(
-      "ul",
-      { staticClass: "list-group" },
-      _vm._l(_vm.list, function(item, index) {
-        return _c(
-          "li",
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-12" }, [
+        _c("h2", { staticClass: "repos_title" }, [_vm._v("Search git repo")]),
+        _vm._v(" "),
+        _c(
+          "form",
           {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.list,
-                expression: "list"
+            staticClass: "form-inline",
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.searchRepos(_vm.q)
               }
-            ],
-            staticClass: "list-group-item d-flex justify-content-between"
+            }
           },
           [
-            _c("span", [
-              _c("span", { staticClass: "mr-3" }, [_vm._v(_vm._s(++index))]),
-              _vm._v(_vm._s(item.full_name))
-            ]),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.q,
+                  expression: "q"
+                }
+              ],
+              staticClass: "form-control col-10",
+              attrs: {
+                type: "search",
+                placeholder: "Введите название репозитория",
+                "aria-label": "Search"
+              },
+              domProps: { value: _vm.q },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.q = $event.target.value
+                }
+              }
+            }),
             _vm._v(" "),
-            item.stared === true
-              ? [
-                  _c("span", [
-                    _c("i", {
-                      staticClass: "far fa-thumbs-down",
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.likeRepo(item.name)
-                        }
-                      }
-                    })
-                  ])
-                ]
-              : [
-                  _c("span", [
-                    _c("i", {
-                      staticClass: "far fa-thumbs-up",
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.diseLikeRepo(item.name)
-                        }
-                      }
-                    })
-                  ])
-                ]
-          ],
-          2
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-outline-success col-2",
+                attrs: { type: "submit" }
+              },
+              [_vm._v("Search")]
+            )
+          ]
         )
-      }),
-      0
-    )
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/dashboard/reposlist-search.vue?vue&type=template&id=6f57e7fc&scoped=true&":
-/*!*****************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/dashboard/reposlist-search.vue?vue&type=template&id=6f57e7fc&scoped=true& ***!
-  \*****************************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "form",
-    { staticClass: "form-inline", on: { submit: function($event) {} } },
-    [
-      _c("input", {
-        staticClass: "form-control col-10",
-        attrs: {
-          type: "search",
-          placeholder: "Введите название репозитория",
-          "aria-label": "Search"
-        }
-      }),
+      ]),
       _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-outline-success col-2",
-          attrs: { type: "submit" }
-        },
-        [_vm._v("Search")]
-      )
-    ]
-  )
+      _c("div", { staticClass: "col-12 mt-2" }, [
+        _c(
+          "ul",
+          { staticClass: "list-group" },
+          _vm._l(_vm.foundRepos, function(item, index) {
+            return _c(
+              "li",
+              { staticClass: "list-group-item d-flex justify-content-between" },
+              [
+                _c("span", [
+                  _c("span", { staticClass: "mr-3" }, [
+                    _vm._v(_vm._s(++index))
+                  ]),
+                  _vm._v(_vm._s(item.full_name))
+                ]),
+                _vm._v(" "),
+                item.is_liked === 0
+                  ? [
+                      _c("span", [
+                        _c("i", {
+                          staticClass: "far fa-thumbs-up",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.likeRepos(item)
+                            }
+                          }
+                        })
+                      ])
+                    ]
+                  : _vm._e(),
+                _vm._v(" "),
+                item.is_liked === 1
+                  ? [
+                      _c("span", [
+                        _c("i", {
+                          staticClass: "far fa-thumbs-down",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.diselikeRepos(item)
+                            }
+                          }
+                        })
+                      ])
+                    ]
+                  : _vm._e()
+              ],
+              2
+            )
+          }),
+          0
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row mt-4" }, [
+      _c("div", { staticClass: "col-12" }, [
+        _c("h2", { staticClass: "repos_title" }, [_vm._v("Git repos list")]),
+        _vm._v(" "),
+        _c(
+          "ul",
+          { staticClass: "list-group" },
+          _vm._l(_vm.list, function(item, index) {
+            return _c(
+              "li",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.list,
+                    expression: "list"
+                  }
+                ],
+                staticClass: "list-group-item d-flex justify-content-between"
+              },
+              [
+                _c("span", [
+                  _c("span", { staticClass: "mr-3" }, [
+                    _vm._v(_vm._s(++index))
+                  ]),
+                  _vm._v(_vm._s(item.full_name))
+                ]),
+                _vm._v(" "),
+                item.is_liked === 0
+                  ? [
+                      _c("span", [
+                        _c("i", {
+                          staticClass: "far fa-thumbs-up",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.likeRepos(item)
+                            }
+                          }
+                        })
+                      ])
+                    ]
+                  : _vm._e(),
+                _vm._v(" "),
+                item.is_liked === 1
+                  ? [
+                      _c("span", [
+                        _c("i", {
+                          staticClass: "far fa-thumbs-down",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.diselikeRepos(item)
+                            }
+                          }
+                        })
+                      ])
+                    ]
+                  : _vm._e()
+              ],
+              2
+            )
+          }),
+          0
+        )
+      ])
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -33204,7 +33342,6 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
-Vue.component('reposlist-search', __webpack_require__(/*! ./components/dashboard/reposlist-search.vue */ "./resources/js/components/dashboard/reposlist-search.vue")["default"]);
 Vue.component('reposlist-component', __webpack_require__(/*! ./components/dashboard/reposlist-component.vue */ "./resources/js/components/dashboard/reposlist-component.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -33300,75 +33437,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_reposlist_component_vue_vue_type_template_id_4fc9bbd9_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_reposlist_component_vue_vue_type_template_id_4fc9bbd9_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/dashboard/reposlist-search.vue":
-/*!****************************************************************!*\
-  !*** ./resources/js/components/dashboard/reposlist-search.vue ***!
-  \****************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _reposlist_search_vue_vue_type_template_id_6f57e7fc_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./reposlist-search.vue?vue&type=template&id=6f57e7fc&scoped=true& */ "./resources/js/components/dashboard/reposlist-search.vue?vue&type=template&id=6f57e7fc&scoped=true&");
-/* harmony import */ var _reposlist_search_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./reposlist-search.vue?vue&type=script&lang=js& */ "./resources/js/components/dashboard/reposlist-search.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _reposlist_search_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _reposlist_search_vue_vue_type_template_id_6f57e7fc_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _reposlist_search_vue_vue_type_template_id_6f57e7fc_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  "6f57e7fc",
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/dashboard/reposlist-search.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/dashboard/reposlist-search.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************!*\
-  !*** ./resources/js/components/dashboard/reposlist-search.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_reposlist_search_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./reposlist-search.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/dashboard/reposlist-search.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_reposlist_search_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/dashboard/reposlist-search.vue?vue&type=template&id=6f57e7fc&scoped=true&":
-/*!***********************************************************************************************************!*\
-  !*** ./resources/js/components/dashboard/reposlist-search.vue?vue&type=template&id=6f57e7fc&scoped=true& ***!
-  \***********************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_reposlist_search_vue_vue_type_template_id_6f57e7fc_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./reposlist-search.vue?vue&type=template&id=6f57e7fc&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/dashboard/reposlist-search.vue?vue&type=template&id=6f57e7fc&scoped=true&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_reposlist_search_vue_vue_type_template_id_6f57e7fc_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_reposlist_search_vue_vue_type_template_id_6f57e7fc_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
