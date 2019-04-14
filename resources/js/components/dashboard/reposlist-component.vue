@@ -13,7 +13,7 @@
             <div class="col-12 mt-2">
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between" v-for="(item, index) in foundRepos">
-                        <span><span class="mr-3">{{++index}}</span>{{item.full_name}}</span>
+                        <span><span class="mr-3">{{++index}}</span><a :href="'/user/dashboard/'+ item.full_name" style="cursor: pointer">{{item.full_name}}</a></span>
 
                         <template v-if="item.is_liked === 0">
                             <span> <i class="far fa-thumbs-up" @click.prevent="likeRepos(item)"></i></span>
@@ -33,7 +33,7 @@
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between" v-for="(item, index) in list"
                         v-show="list">
-                        <span><span class="mr-3">{{++index}}</span>{{item.full_name}}</span>
+                        <span><span class="mr-3">{{++index}}</span><a :href="'/user/dashboard/'+ item.full_name" style="cursor: pointer">{{item.full_name}}</a></span>
 
                         <template v-if="item.is_liked === 0">
                             <span> <i class="far fa-thumbs-up" @click.prevent="likeRepos(item)"></i></span>
@@ -52,9 +52,7 @@
 <script>
     import lodash from 'lodash'
     import axios from 'axios';
-    import vSelect from 'vue-select'
 
-    Vue.component('v-select', vSelect);
     export default {
         data() {
             return {
@@ -63,35 +61,34 @@
                 foundRepos: []
             }
         },
-        components: {
-            'vSelect': vSelect
-        },
+        props:['url'],
         async created() {
             //get random repos
             let repos = await  axios(
                 {
                     method: 'get',
                     url: 'https://api.github.com/repositories',
-                    auth: {
-                        username: 'bayduzh89@gmail.com',
-                        password: '0985594949lion'
-                    }
                 }).then((res) => {
                 return _.chunk(res.data, 50)[0];
             });
 
             //Get stared Users repos
             let usersStaredRepos = await axios.get('/ajax/getUserRepos').then((res) => {
+                console.log(res.data);
                 return res.data;
             });
 
-            //If repos has been stared add property stared = true, else = false
+            //If repos has been liked add property 1, else = 0
             repos.map(function (item) {
-                for (let i = 0; i < usersStaredRepos.length; i++) {
-                    if (item.full_name === usersStaredRepos[i].full_name && item.hasOwnProperty('is_liked')) {
-                        item.is_liked = usersStaredRepos[i].is_liked;
-                    } else if (!item.hasOwnProperty('is_liked')) {
-                        item.is_liked = 0;
+                if (usersStaredRepos.length === 0) {
+                    item.is_liked = 0;
+                } else {
+                    for (let i = 0; i < usersStaredRepos.length; i++) {
+                        if (item.full_name === usersStaredRepos[i].full_name) {
+                            item.is_liked = usersStaredRepos[i].is_liked;
+                        } else if (!item.hasOwnProperty('is_liked')) {
+                            item.is_liked = 0;
+                        }
                     }
                 }
             });
@@ -107,7 +104,14 @@
                         if (item.full_name === res.data) {
                             item.is_liked = 1;
                         }
-                    })
+                    });
+                    if (this.foundRepos.length > 0) {
+                        this.foundRepos.map(function (item) {
+                            if (item.full_name === res.data) {
+                                item.is_liked = 1;
+                            }
+                        });
+                    }
                 })
             },
             diselikeRepos(repo) {
@@ -118,15 +122,36 @@
                         if (item.full_name === res.data) {
                             item.is_liked = 0;
                         }
-                    })
+                    });
+                    if (this.foundRepos.length > 0) {
+                        this.foundRepos.map(function (item) {
+                            if (item.full_name === res.data) {
+                                item.is_liked = 0;
+                            }
+                        });
+                    }
                 })
             },
-            searchRepos(q) {
-                axios.get(`https://api.github.com/search/repositories?q=${q}`).then((res) => {
-                    this.foundRepos = _.chunk(res.data.items, 50)[0]
-                })
-            }
-
+            async searchRepos(q) {
+                if (q !== '') {
+                    let fRepos = await axios.get(`https://api.github.com/search/repositories?q=${q}`).then((res) => {
+                        return _.chunk(res.data.items, 50)[0];
+                    });
+                    let userRepos = await axios.get('/ajax/getUserRepos').then((res) => {
+                        return res.data;
+                    });
+                    fRepos.map(function (item) {
+                        for (let i = 0; i < userRepos.length; i++) {
+                            if (item.full_name === userRepos[i].full_name && item.hasOwnProperty('is_liked')) {
+                                item.is_liked = userRepos[i].is_liked;
+                            } else if (!item.hasOwnProperty('is_liked')) {
+                                item.is_liked = 0;
+                            }
+                        }
+                    });
+                    this.foundRepos = fRepos;
+                }
+            },
         }
     }
 </script>

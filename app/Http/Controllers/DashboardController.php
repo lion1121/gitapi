@@ -50,15 +50,11 @@ class DashboardController extends Controller
             $repo->save();
             return response()->json($request->repoName);
         }
-
-
     }
 
     public function diselikeRepo(Request $request)
     {
         $repo = Repo::where(['full_name' => $request->repoName, 'user_id' => Auth::id()])->first();
-
-
         if ($repo->is_liked === 1) {
             $repo->is_liked = 0;
             $repo->save();
@@ -67,6 +63,19 @@ class DashboardController extends Controller
             $repo->is_liked = 1;
             $repo->save();
         }
+    }
+
+    public function showRepo(Request $request)
+    {
+//        dd($request->route()->parameters());
+        $owner = $request->route()->parameters()['owner'];
+        $name = $request->route()->parameters()['name'];
+        $endpoint = "http://api.github.com/repos/" . $owner . "/" . $name;
+//        return response()->json($endpoint);
+
+        return view('dashboard.reposinfo',compact('endpoint'));
+
+
 
 
     }

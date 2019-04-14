@@ -22,6 +22,7 @@ window.Vue = require('vue');
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('reposlist-component', require('./components/dashboard/reposlist-component.vue').default);
+Vue.component('reposinfo-component', require('./components/dashboard/reposinfo-component.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
