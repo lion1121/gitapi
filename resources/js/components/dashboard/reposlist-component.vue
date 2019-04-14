@@ -6,13 +6,13 @@
         <!--<img src="../../../../public/img/preloader/giphy.gif" alt="">-->
         <ul class="list-group">
             <li class="list-group-item d-flex justify-content-between" v-for="(item, index) in list" v-show="list">
-                <span class="mr-3">{{++index}}</span>{{item.full_name}}
+                <span><span class="mr-3">{{++index}}</span>{{item.full_name}}</span>
                 <template v-if="item.stared === true">
-                    <span> <i class="far fa-thumbs-down"></i></span>
+                    <span> <i class="far fa-thumbs-down" @click.prevent="likeRepo(item.name)"></i></span>
 
                 </template>
                 <template v-else>
-                    <span> <i class="far fa-thumbs-up"></i></span>
+                    <span> <i class="far fa-thumbs-up" @click.prevent="diseLikeRepo(item.name)"></i></span>
                 </template>
             </li>
         </ul>
@@ -65,6 +65,9 @@
             });
 
             this.list = repos;
+        },
+        actions: {
+
         }
     }
 </script>

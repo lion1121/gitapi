@@ -1878,7 +1878,8 @@ Vue.component('v-select', vue_select__WEBPACK_IMPORTED_MODULE_3___default.a);
     }
 
     return created;
-  }()
+  }(),
+  actions: {}
 });
 
 /***/ }),
@@ -20936,9 +20937,38 @@ var render = function() {
             staticClass: "list-group-item d-flex justify-content-between"
           },
           [
-            _c("span", { staticClass: "mr-3" }, [_vm._v(_vm._s(++index))]),
-            _vm._v(_vm._s(item.full_name) + "\n            "),
-            item.stared === true ? [_vm._m(0, true)] : [_vm._m(1, true)]
+            _c("span", [
+              _c("span", { staticClass: "mr-3" }, [_vm._v(_vm._s(++index))]),
+              _vm._v(_vm._s(item.full_name))
+            ]),
+            _vm._v(" "),
+            item.stared === true
+              ? [
+                  _c("span", [
+                    _c("i", {
+                      staticClass: "far fa-thumbs-down",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.likeRepo(item.name)
+                        }
+                      }
+                    })
+                  ])
+                ]
+              : [
+                  _c("span", [
+                    _c("i", {
+                      staticClass: "far fa-thumbs-up",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.diseLikeRepo(item.name)
+                        }
+                      }
+                    })
+                  ])
+                ]
           ],
           2
         )
@@ -20947,20 +20977,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", [_c("i", { staticClass: "far fa-thumbs-down" })])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", [_c("i", { staticClass: "far fa-thumbs-up" })])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
