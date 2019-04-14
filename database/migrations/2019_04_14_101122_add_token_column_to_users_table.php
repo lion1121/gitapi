@@ -15,7 +15,7 @@ class AddTokenColumnToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
-            $table->string('token')->nullable();
+            $table->string('provider_id')->nullable();
         });
     }
 
@@ -28,7 +28,7 @@ class AddTokenColumnToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
-            $table->dropColumn('token');
+            $table->dropColumn('provider_id');
         });
     }
 }

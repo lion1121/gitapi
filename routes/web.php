@@ -23,3 +23,5 @@ Route::get('/user/dashboard', 'DashboardController@index');
 
 Route::get('login/github', 'Auth\LoginController@redirectToProvider')->name('gitauth');
 Route::get('login/github/callback', 'Auth\LoginController@handleProviderCallback');
+
+//Route::get('/ajax/userData', 'DashboardController@getUserData');

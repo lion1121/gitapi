@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends Controller
@@ -56,9 +57,25 @@ class LoginController extends Controller
      */
     public function handleProviderCallback()
     {
-        $gitData = Socialite::driver('github')->user();
-        $user = new User();
-//        dd($user);
-        // $user->token;
+        $git_user = Socialite::driver('github')->user();
+//        dd($git_user);
+        $user =  $this->userFindOrCreate($git_user);
+
+        Auth::login($user, true);
+        return redirect('/user/dashboard');
+    }
+
+    public function userFindOrCreate($git_user){
+        $user = User::where('provider_id',$git_user->id)->first();
+
+        if(!$user) {
+            $user = new User();
+            $user->name = $git_user->nickname;
+            $user->provider_id = $git_user->id;
+            $user->email = $git_user->email;
+            $user->save();
+
+        }
+        return $user;
     }
 }
