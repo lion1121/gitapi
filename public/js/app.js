@@ -2025,6 +2025,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return likeRepos;
     }(),
+    //
     diselikeRepos: function diselikeRepos(repo) {
       var _this2 = this;
 
@@ -2046,6 +2047,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       });
     },
+    //Fetch repos
     searchRepos: function () {
       var _searchRepos = _asyncToGenerator(
       /*#__PURE__*/
@@ -21234,7 +21236,7 @@ var render = function() {
                     "a",
                     {
                       staticStyle: { cursor: "pointer" },
-                      attrs: { href: "/user/dashboard/" + item.full_name }
+                      attrs: { href: "/user/dashboard/repo/" + item.id }
                     },
                     [_vm._v(_vm._s(item.full_name))]
                   )
@@ -21310,7 +21312,7 @@ var render = function() {
                     "a",
                     {
                       staticStyle: { cursor: "pointer" },
-                      attrs: { href: "/user/dashboard/" + item.full_name }
+                      attrs: { href: "/user/dashboard/repo/" + item.id }
                     },
                     [_vm._v(_vm._s(item.full_name))]
                   )

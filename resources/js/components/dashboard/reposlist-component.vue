@@ -13,7 +13,7 @@
             <div class="col-12 mt-2">
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between" v-for="(item, index) in foundRepos">
-                        <span><span class="mr-3">{{++index}}</span><a :href="'/user/dashboard/'+ item.full_name" style="cursor: pointer">{{item.full_name}}</a></span>
+                        <span><span class="mr-3">{{++index}}</span><a :href="'/user/dashboard/repo/'+ item.id" style="cursor: pointer">{{item.full_name}}</a></span>
 
                         <template v-if="item.is_liked === 0">
                             <span> <i class="far fa-thumbs-up" @click.prevent="likeRepos(item)"></i></span>
@@ -33,7 +33,7 @@
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between" v-for="(item, index) in list"
                         v-show="list">
-                        <span><span class="mr-3">{{++index}}</span><a :href="'/user/dashboard/'+ item.full_name" style="cursor: pointer">{{item.full_name}}</a></span>
+                        <span><span class="mr-3">{{++index}}</span><a :href="'/user/dashboard/repo/'+ item.id" style="cursor: pointer">{{item.full_name}}</a></span>
 
                         <template v-if="item.is_liked === 0">
                             <span> <i class="far fa-thumbs-up" @click.prevent="likeRepos(item)"></i></span>
@@ -114,6 +114,7 @@
                     }
                 })
             },
+            //
             diselikeRepos(repo) {
                 axios.post('/ajax/diselikeRepo', {
                     repoName: repo.full_name
@@ -132,6 +133,7 @@
                     }
                 })
             },
+            //Fetch repos
             async searchRepos(q) {
                 if (q !== '') {
                     let fRepos = await axios.get(`https://api.github.com/search/repositories?q=${q}`).then((res) => {

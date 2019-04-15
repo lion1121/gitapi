@@ -19,7 +19,7 @@ Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/user/dashboard', 'DashboardController@index');
-Route::get('/user/dashboard/{owner}/{name}', 'DashboardController@showRepo');
+Route::get('/user/dashboard/repo/{id}', 'DashboardController@showRepo');
 //Route::post();
 
 Route::get('login/github', 'Auth\LoginController@redirectToProvider')->name('gitauth');

@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Repo;
 use App\User;
+use Github\Exception\ApiLimitExceedException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use mysql_xdevapi\Exception;
 
 class DashboardController extends Controller
 {
@@ -65,13 +67,26 @@ class DashboardController extends Controller
         }
     }
 
-    public function showRepo(Request $request)
+    public function showRepo($id)
     {
-        $owner = $request->route()->parameters()['owner'];
-        $name = $request->route()->parameters()['name'];
-        $endpoint = "http://api.github.com/repos/" . $owner . "/" . $name;
+        $repoId = filter_var($id, FILTER_VALIDATE_INT);
 
-        return view('dashboard.reposinfo');
+        $client = new \Github\Client();
+
+        try {
+            $repository =  $client->api('repo')->showById($repoId);
+            if(!is_array($repository)){
+                throw new Exception("You can make 60 requests in hour");
+            }
+        }catch (ApiLimitExceedException $e){
+            echo $e->getMessage();
+        }
+
+        $id = $repository['id'];
+        $name = $repository['name'];
+        $owner = $repository['owner']['login'];
+        $stars = $repository['stargazers_count'];
+        return view('dashboard.reposinfo', compact('id','name','owner','stars'));
 
 
 
