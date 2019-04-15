@@ -141,13 +141,18 @@
                         return res.data;
                     });
                     fRepos.map(function (item) {
-                        for (let i = 0; i < userRepos.length; i++) {
-                            if (item.full_name === userRepos[i].full_name && item.hasOwnProperty('is_liked')) {
-                                item.is_liked = userRepos[i].is_liked;
-                            } else if (!item.hasOwnProperty('is_liked')) {
-                                item.is_liked = 0;
+                        if(userRepos.length === 0){
+                            item.is_liked = 0;
+                        } else {
+                            for (let i = 0; i < userRepos.length; i++) {
+                                if (item.full_name === userRepos[i].full_name && item.hasOwnProperty('is_liked')) {
+                                    item.is_liked = userRepos[i].is_liked;
+                                } else if (!item.hasOwnProperty('is_liked')) {
+                                    item.is_liked = 0;
+                                }
                             }
                         }
+
                     });
                     this.foundRepos = fRepos;
                 }
